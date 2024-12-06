@@ -1,25 +1,14 @@
 <a name="readme-top"></a>
 
-[![Contributeurs][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Étoiles][stars-shield]][stars-url]
-[![Problèmes][issues-shield]][issues-url]
-[![Licence MIT][license-shield]][license-url]
-
 <br />
 <div align="center">
   <h3 align="center">Wix Automation Tools</h3>
   <p align="center">
-    Automatiser l'importation et la gestion des produits dans Wix à partir d'APIs externes avec des outils puissants et des validations avancées !
+    Automatiser l'importation et la gestion des produits dans Wix à partir de l'API des sneakers
     <br />
     <a href="https://github.com/your_username/repo_name"><strong>Explorer la documentation »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/your_username/repo_name">Voir la démo</a>
-    ·
-    <a href="https://github.com/your_username/repo_name/issues">Signaler un bug</a>
-    ·
-    <a href="https://github.com/your_username/repo_name/issues">Demander une fonctionnalité</a>
   </p>
 </div>
 
