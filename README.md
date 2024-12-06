@@ -1,25 +1,13 @@
 <a name="readme-top"></a>
 
-[![Contributeurs][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Étoiles][stars-shield]][stars-url]
-[![Problèmes][issues-shield]][issues-url]
-[![Licence MIT][license-shield]][license-url]
-
 <br />
 <div align="center">
-  <h3 align="center">Automatisation de l'importation de produits Wix</h3>
+  <h3 align="center">Automatisation de l'importation des sneakers dans Wix</h3>
   <p align="center">
-    Automatisez l'importation de produits dans Wix à partir d'une API avec une validation et un traitement efficaces !
     <br />
     <a href="https://github.com/your_username/repo_name"><strong>Explorer la documentation »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/your_username/repo_name">Voir la démo</a>
-    ·
-    <a href="https://github.com/your_username/repo_name/issues">Signaler un bug</a>
-    ·
-    <a href="https://github.com/your_username/repo_name/issues">Demander une fonctionnalité</a>
   </p>
 </div>
 
@@ -39,12 +27,6 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#utilisation">Utilisation</a></li>
-    <li><a href="#feuille-de-route">Feuille de route</a></li>
-    <li><a href="#contribuer">Contribuer</a></li>
-    <li><a href="#licence">Licence</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#remerciements">Remerciements</a></li>
   </ol>
 </details>
 
