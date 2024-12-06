@@ -1,0 +1,112 @@
+import os
+import requests
+import pandas as pd
+from tqdm import tqdm
+
+# Configuration
+API_SOURCE_URL = "http://54.37.12.181:1337/api/sneakers"
+OUTPUT_FILE = "wix_products.csv"
+LOG_FILE = "rejected_products.log"
+BATCH_SIZE = 100
+VALID_IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg"]
+
+# Fonction pour valider une URL d'image
+def validate_image_url(url):
+    """Valide si une URL d'image est accessible et correspond aux critères"""
+    try:
+        response = requests.head(url, timeout=5)
+        if response.status_code == 200 and "image" in response.headers.get("Content-Type", ""):
+            return True
+        return False
+    except requests.RequestException:
+        return False
+
+# Fonction pour récupérer les produits depuis l'API
+def fetch_products():
+    """Récupère les produits de l'API avec pagination"""
+    products = []
+    page = 1
+    print("Fetching products from the API...")
+    while True:
+        try:
+            url = f"{API_SOURCE_URL}?pagination[page]={page}&pagination[pageSize]={BATCH_SIZE}"
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            if not data.get("data"):
+                break
+            products.extend(data["data"])
+            print(f"Fetched page {page}. Total products so far: {len(products)}.")
+            if page >= data.get("meta", {}).get("pagination", {}).get("pageCount", 0):
+                break
+            page += 1
+        except requests.RequestException as e:
+            print(f"Error fetching page {page}: {e}")
+            break
+    return products
+
+# Fonction pour traiter un produit
+def process_product(product, log_file, handle_ids):
+    """Traite chaque produit en appliquant les règles de gestion"""
+    attributes = product.get("attributes", {})
+    name = attributes.get("name", "").strip()
+    image = attributes.get("image", {}).get("original", "").strip()
+    price = attributes.get("retailPrice")
+    sku = attributes.get("sku", "").strip()
+    description = attributes.get("story", "").strip()
+
+    # Validation stricte des produits
+    if not name or not price or not sku or not description:
+        log_file.write(f"Rejected product: {name} (Missing fields)\n")
+        return None
+    if not image or not validate_image_url(image):
+        log_file.write(f"Rejected product: {name} (Invalid image: {image})\n")
+        return None
+
+    # Générer un handleId unique
+    base_handle = name.replace(" ", "-").lower()
+    handle_id = f"{base_handle[:50]}-{sku}"
+    if handle_id in handle_ids:
+        log_file.write(f"Duplicate product: {name}\n")
+        return None
+    handle_ids.add(handle_id)
+
+    return {
+        "handleId": handle_id,
+        "fieldType": "Product",
+        "Name": name,
+        "Price": f"{price:.2f}",
+        "SKU": sku,
+        "Image": image,
+        "Description": description,
+        "InStock": "in_stock",
+    }
+
+# Fonction principale
+def main():
+    """Point d'entrée principal pour exécuter le script"""
+    # Récupération des produits depuis l'API
+    raw_products = fetch_products()
+    if not raw_products:
+        print("No products retrieved from the API.")
+        return
+
+    # Traitement des produits
+    handle_ids = set()
+    valid_products = []
+    with open(LOG_FILE, "w") as log_file:
+        for product in tqdm(raw_products, desc="Processing products"):
+            processed = process_product(product, log_file, handle_ids)
+            if processed:
+                valid_products.append(processed)
+
+    # Sauvegarde des produits valides
+    if valid_products:
+        df = pd.DataFrame(valid_products)
+        df.to_csv(OUTPUT_FILE, index=False)
+        print(f"CSV file generated: {OUTPUT_FILE} with {len(valid_products)} products.")
+    else:
+        print("No valid products found after processing.")
+
+if __name__ == "__main__":
+    main()
